@@ -29,18 +29,18 @@ int _crtStoInt(char *data)
 
 /**
  * _rtnEr - prints an error message
- * @info: the parameter & return info struct
+ * @passinfo: the parameter & return info struct
  * @der: string containing specified error type
  * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void _rtnEr(info_t *info, char *der)
+void _rtnEr(info_t *passinfo, char *der)
 {
-	_eputs(info->fname);
+	_eputs(passinfo->fname);
 	_eputs(": ");
-	print_d(info->line_count, STDERR_FILENO);
+	print_d(passinfo->line_count, STDERR_FILENO);
 	_eputs(": ");
-	_eputs(info->argv[0]);
+	_eputs(passinfo->argv[0]);
 	_eputs(": ");
 	_eputs(der);
 }

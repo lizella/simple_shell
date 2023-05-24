@@ -1,37 +1,37 @@
 #include "shell.h"
 /**
  * _exit - exits shell
- * @info: Struct
+ * @passinfo: Struct
  * Return: exits with a given exit status
  * (0) if info.argv[0] != "exit"
  */
-int _exit(info_t *info)
+int Shexit(info_t *passinfo)
 {
 	int exit;
 
-	if (info->argv[1]) /* If there is an exit arguement */
+	if (passinfo->argv[1]) /* If there is an exit arguement */
 	{
-		exit = _erratoi(info->argv[1]);
+		exit = _erratoi(passinfo->argv[1]);
 		if (exit == -1)
 		{
 			info->status = 2;
-			print_error(info, "Illegal number: ");
-			_eputs(info->argv[1]);
+			print_error(passinfo, "Illegal number: ");
+			_eputs(passinfo->argv[1]);
 			_eputchar('\n');
 			return (1);
 		}
-		info->err_num = _erratoi(info->argv[1]);
+		passinfo->err_num = _erratoi(passinfo->argv[1]);
 		return (-2);
 	}
-	info->err_num = -1;
+	passinfo->err_num = -1;
 	return (-2);
 }
 /**
  * _currentDr - current directory of the process
- * @info: Struct
+ * @passinfo: Struct
  * Return: Always 0
  */
-int _currentDr(info_t *info)
+int _currentDr(info_t *passinfo)
 {
 	char *data, *dr, buffer[1024];
 	int num;
@@ -39,52 +39,52 @@ int _currentDr(info_t *info)
 	data = getcwd(buffer, 1024);
 	if (!data)
 		_puts("TODO: >>getcwd failure emsg here<<\n");
-	if (!info->argv[1])
+	if (!passinfo->argv[1])
 	{
-		dr = _getenv(info, "HOME=");
+		dr = _getenv(passinfo, "HOME=");
 		if (!dr)
 			num = /* TODO: what should this be? */
-				chdir((dr = _getenv(info, "PWD=")) ? dr : "/");
+				chdir((dr = _getenv(passinfo, "PWD=")) ? dr : "/");
 		else
 			num = chdir(dr);
 	}
-	else if (_strcmp(info->argv[1], "-") == 0)
+	else if (_strcmp(passinfo->argv[1], "-") == 0)
 	{
-		if (!_getenv(info, "OLDPWD="))
+		if (!_getenv(passinfo, "OLDPWD="))
 		{
 			_puts(s);
 			_putchar('\n');
 			return (1);
 		}
-		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
+		_puts(_getenv(passinfo, "OLDPWD=")), _putchar('\n');
 		num = /* TODO: what should this be? */
-			chdir((dr = _getenv(info, "OLDPWD=")) ? dr : "/");
+			chdir((dr = _getenv(passinfo, "OLDPWD=")) ? dr : "/");
 	}
 	else
-		num = chdir(info->argv[1]);
+		num = chdir(passinfo->argv[1]);
 	if (num == -1)
 	{
-		print_error(info, "can't cd to ");
-		_eputs(info->argv[1]), _eputchar('\n');
+		print_error(passinfo, "can't cd to ");
+		_eputs(passinfo->argv[1]), _eputchar('\n');
 	}
 	else
 	{
-		_setenv(info, "OLDPWD", _getenv(info, "PWD="));
-		_setenv(info, "PWD", getcwd(buffer, 1024));
+		_setenv(passinfo, "OLDPWD", _getenv(passinfo, "PWD="));
+		_setenv(passinfo, "PWD", getcwd(buffer, 1024));
 	}
 	return (0);
 }
 
 /**
- * changeDr - changes the current directory 
- * @info: Struct
+ * changeDr - changes the current directory
+ * @passinfo: Struct
  * Return: Always 0
  */
-int changeDr(info_t *info)
+int changeDr(info_t *passinfo)
 {
 	char **arg_array;
 
-	arg_array = info->argv;
+	arg_array = passinfo->argv;
 	_puts("help call works. Function not yet implemented \n");
 	if (0)
 		_puts(*arg_array); /* temp att_unused workaround */

@@ -1,12 +1,12 @@
 #include "shell.h"
 /**
  * inter - interactive mode
- * @info: struct address
+ * @passinfo: struct address
  * Return: 1 if interactive mode, 0 otherwise
  */
-int inter(info_t *info)
+int inter(info_t *passinfo)
 {
-	return (isatty(STDIN_FILENO) && info->readfd <= 2);
+	return (isatty(STDIN_FILENO) && passinfo->readfd <= 2);
 }
 
 /**
@@ -25,7 +25,7 @@ int check1(char ch, char *str)
 
 /**
  * check2 - checks for alphabetic character
- * @num: The character 
+ * @num: The character
  * Return: 1 if num is alphabetic, 0 otherwise
  */
 
@@ -39,7 +39,7 @@ int check2(int num)
 
 /**
  * check3 - string to integer
- * @data: the string 
+ * @data: the string
  * Return: 0 if no numbers in string, converted number otherwise
  */
 

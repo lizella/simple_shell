@@ -1,15 +1,15 @@
 #include "shell.h"
 /**
  * his_fl - gets the history file
- * @info: struct
+ * @passinfo: struct
  * Return: allocated string containg history file
  */
 
-char *his_fl(info_t *info)
+char *his_fl(info_t *passinfo)
 {
 	char *buf, *dir;
 
-	dir = _getenv(info, "HOME=");
+	dir = _getenv(passinfo, "HOME=");
 	if (!dir)
 		return (NULL);
 	buf = malloc(sizeof(char) * (_strlen(dir) + _strlen(HIST_FILE) + 2));
@@ -24,13 +24,13 @@ char *his_fl(info_t *info)
 
 /**
  * w_his - creates a file, or appends to an existing file
- * @info: struct
+ * @passinfo: struct
  * Return: 1 on success, else -1
  */
-int w_his(info_t *info)
+int w_his(info_t *passinfo)
 {
 	ssize_t fls;
-	char *filename = his_fl(info);
+	char *filename = his_fl(passinfo);
 	list_t *node = NULL;
 
 	if (!filename)
@@ -40,7 +40,7 @@ int w_his(info_t *info)
 	free(filename);
 	if (fls == -1)
 		return (-1);
-	for (node = info->history; node; node = node->next)
+	for (node = passinfo->history; node; node = node->next)
 	{
 		_putsfls(node->str, fls);
 		_putfd('\n', fls);
@@ -52,15 +52,15 @@ int w_his(info_t *info)
 
 /**
  * rd_hist - reads history from file
- * @info: struct
+ * @passinfo: struct
  * Return: histcount on success, 0 otherwise
  */
-int rd_hist(info_t *info)
+int rd_hist(info_t *passinfo)
 {
 	int z, b = 0, count = 0;
 	ssize_t fls, readlen, filesize = 0;
 	struct stat st;
-	char *buf = NULL, *filename = his_fl(info);
+	char *buf = NULL, *filename = his_fl(passinfo);
 
 	if (!filename)
 		return (0);
@@ -85,48 +85,48 @@ int rd_hist(info_t *info)
 		if (buf[z] == '\n')
 		{
 			buf[z] = 0;
-			hist_lst(info, buf + b, count++);
+			hist_lst(passinfo, buf + b, count++);
 			b = z + 1;
 		}
 	if (b != i)
-		hist_lst(info, buf + b, count++);
+		hist_lst(passinfo, buf + b, count++);
 	free(buf);
 	info->histcount = count;
-	while (info->histcount-- >= HIST_MAX)
-		delete_node_at_index(&(info->history), 0);
-	renumber_history(info);
-	return (info->histcount);
+	while (passinfo->histcount-- >= HIST_MAX)
+		delete_node_at_index(&(passinfo->history), 0);
+	renumber_history(passinfo);
+	return (passinfo->histcount);
 }
 
 /**
  * hist_lst - adds entry to a history linked list
- * @info: Struct
+ * @passinfo: Struct
  * @b: buffer
  * @count: the history linecount, histcount
  *
  * Return: Always 0
  */
-int hist_lst (info_t *info, char *buf, int count)
+int hist_lst (info_t *passinfo, char *buf, int count)
 {
 	list_t *node = NULL;
 
-	if (info->history)
-		node = info->history;
+	if (passinfo->history)
+		node = passinfo->history;
 	add_node_end(&node, buf, count);
 
-	if (!info->history)
-		info->history = node;
+	if (!passinfo->history)
+		passinfo->history = node;
 	return (0);
 }
 
 /**
  * renumber - renumbers the history linked list after changes
- * @info: Struct
+ * @passinfo: Struct
  * Return: the new histcount
  */
-int renumber(info_t *info)
+int renumber(info_t *passinfo)
 {
-	list_t *node = info->history;
+	list_t *node = passinfo->history;
 	int z = 0;
 
 	while (node)
@@ -134,6 +134,6 @@ int renumber(info_t *info)
 		node->num = z++;
 		node = node->next;
 	}
-	return (info->histcount = z);
+	return (passinfo->histcount = z);
 }
 

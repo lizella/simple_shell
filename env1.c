@@ -1,28 +1,28 @@
 #include "shell.h"
 /**
  * env1 - returns the string array copy of our environ
- * @info: Struct
+ * @passinfo: Struct
  * Return: Always 0
  */
-char **env1(info_t *info)
+char **env1(info_t *passinfo)
 {
-	if (!info->environ || info->env_changed)
+	if (!passinfo->environ || passinfo->env_changed)
 	{
-		info->environ = list_to_strings(info->env);
-		info->env_changed = 0;
+		passinfo->environ = list_to_strings(passinfo->env);
+		passinfo->env_changed = 0;
 	}
 
-	return (info->environ);
+	return (passinfo->environ);
 }
 /**
  * _uEnv - Remove an environment variable
- * @info: Struct
+ * @passinfo: Struct
  *  Return: 1 on delete, 0 otherwise
  * @v: the string env var property
  */
-int _uEnv(info_t *info, char *v)
+int _uEnv(info_t *passinfo, char *v)
 {
-	list_t *node = info->env;
+	list_t *node = passinfo->env;
 	size_t z = 0;
 	char *x;
 
@@ -34,25 +34,25 @@ int _uEnv(info_t *info, char *v)
 		x = starts_with(node->str, v);
 		if (x && *x == '=')
 		{
-			info->env_changed = delete_node_at_index(&(info->env), z);
+			passinfo->env_changed = delete_node_at_index(&(passinfo->env), z);
 			z = 0;
-			node = info->env;
+			node = passinfo->env;
 			continue;
 		}
 		node = node->next;
 		z++;
 	}
-	return (info->env_changed);
+	return (passinfo->env_changed);
 }
 
 /**
  * _newVar - Initialize a new environment variable
- * @info: Struct
+ * @passinfo: Struct
  * @v: the string env var property
  * @val: the string env var value
  *  Return: Always 0
  */
-int _newVar(info_t *info, char *v, char *val)
+int _newVar(info_t *passinfo, char *v, char *val)
 {
 	char *buf = NULL;
 	list_t *node;
@@ -75,14 +75,14 @@ int _newVar(info_t *info, char *v, char *val)
 		{
 			free(node->str);
 			node->str = buf;
-			info->env_changed = 1;
+			passinfo->env_changed = 1;
 			return (0);
 		}
 		node = node->next;
 	}
 	add_node_end(&(info->env), buf, 0);
 	free(buf);
-	info->env_changed = 1;
+	passinfo->env_changed = 1;
 	return (0);
 }
 

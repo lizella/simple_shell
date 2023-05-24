@@ -160,11 +160,13 @@ void *_realloc(void *, unsigned int, unsigned int);
 /* toem_memory.c */
 int freed(void **);
 
-/* toem_atoi.c */
-int interactive(info_t *);
-int is_delim(char, char *);
-int _isalpha(int);
-int _atoi(char *);
+/* toem_inter.c */
+int inter(info_t *);
+int check1(char, char *);
+int check2(int);
+int check3(char *);
+
+
 
 /* toem_errors1.c */
 int _erratoi(char *);
@@ -173,10 +175,10 @@ int print_d(int, int);
 char *convert_number(long int, int, int);
 void remove_comments(char *);
 
-/* toem_builtin.c */
-int _myexit(info_t *);
-int _mycd(info_t *);
-int _myhelp(info_t *);
+/* toem_chdr.c */
+int Shexit(info_t *)
+int _currentDr(info_t *);
+int changeDr(info_t *);
 
 /* toem_builtin1.c */
 int _myhistory(info_t *);

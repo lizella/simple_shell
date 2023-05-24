@@ -1,23 +1,22 @@
 #include "shell.h"
-
 /**
  * _hist - history list
- * @info: Struct
+ * @passinfo: Struct
  *  Return: Always 0
  */
-int _hist(info_t *info)
+int _hist(info_t *passinfo)
 {
-	print_list(info->history);
+	print_list(passinfo->history);
 	return (0);
 }
 
 /**
  * set_als - unsets alias to string
- * @info: struct
+ * @passinfo: struct
  * @st: the string 
  * Return: Always 0 on success, 1 on error
  */
-int set_als(info_t *info, char *st)
+int set_als(info_t *passinfo, char *st)
 {
 	char *num, data;
 	int otp;
@@ -27,19 +26,19 @@ int set_als(info_t *info, char *st)
 		return (1);
 	data = *num;
 	*num = 0;
-	otp = delete_node_at_index(&(info->alias),
-		get_node_index(info->alias, node_starts_with(info->alias, st, -1)));
+	otp = delete_node_at_index(&(passinfo->alias),
+		get_node_index(passinfo->alias, node_starts_with(info->alias, st, -1)));
 	*num = data;
 	return (otp);
 }
 
 /**
  * set_als1 - sets alias to string
- * @info: struct
+ * @passinfo: struct
  * @st: the string 
  * Return: Always 0 on success, 1 on error
  */
-int set_als1(info_t *info, char *st)
+int set_als1(info_t *passinfo, char *st)
 {
 	char *num;
 
@@ -47,10 +46,10 @@ int set_als1(info_t *info, char *st)
 	if (!num)
 		return (1);
 	if (!*++num)
-		return (set_als(info, st));
+		return (set_als(passinfo, st));
 
-	set_als(info, st);
-	return (add_node_end(&(info->alias), st, 0) == NULL);
+	set_als(passinfo, st);
+	return (add_node_end(&(passinfo->alias), st, 0) == NULL);
 }
 
 /**
@@ -77,10 +76,10 @@ int printAls(list_t *n)
 
 /**
  * _Als - alias builtin
- * @info: Struct
+ * @passinfo: Struct
  *  Return: Always 0
  */
-int _Als(info_t *info)
+int _Als(info_t *passinfo)
 {
 	int i = 0;
 	char *num = NULL;
@@ -88,7 +87,7 @@ int _Als(info_t *info)
 
 	if (info->argc == 1)
 	{
-		node = info->alias;
+		node = passinfo->alias;
 		while (node)
 		{
 			print_alias(node);
@@ -96,13 +95,13 @@ int _Als(info_t *info)
 		}
 		return (0);
 	}
-	for (i = 1; info->argv[i]; i++)
+	for (i = 1; passinfo->argv[i]; i++)
 	{
-		num = _strchr(info->argv[i], '=');
+		num = _strchr(passinfo->argv[i], '=');
 		if (num)
-			set_alias(info, info->argv[i]);
+			set_alias(passinfo, passinfo->argv[i]);
 		else
-			print_alias(node_starts_with(info->alias, info->argv[i], '='));
+			print_alias(node_starts_with(passinfo->alias, passinfo->argv[i], '='));
 	}
 
 	return (0);

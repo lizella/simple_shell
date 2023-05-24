@@ -1,12 +1,12 @@
 #include "shell.h"
 /**
  * ibuf - buffers chained commands
- * @info: struct
+ * @passinfo: struct
  * @b: address of buffer
  * @length: address of len var
  * Return: bytes read
  */
-ssize_t ibuf(info_t *info, char **b, size_t *length)
+ssize_t ibuf(info_t *passinfo, char **b, size_t *length)
 {
 	ssize_t x = 0;
 	size_t y = 0;
@@ -20,7 +20,7 @@ ssize_t ibuf(info_t *info, char **b, size_t *length)
 #if USE_GETLINE
 		x = getline(b, &y, stdin);
 #else
-		x = _getline(info, b, &y);
+		x = _getline(passinfo, b, &y);
 #endif
 		if (x > 0)
 		{
@@ -29,9 +29,9 @@ ssize_t ibuf(info_t *info, char **b, size_t *length)
 				(*b)[x - 1] = '\0'; /* remove trailing newline */
 				x--;
 			}
-			info->linecount_flag = 1;
+			passinfo->linecount_flag = 1;
 			remove_comments(*b);
-			build_history_list(info, *b, info->histcount++);
+			build_history_list(passinfo, *b, passinfo->histcount++);
 			/* if (_strchr(*buf, ';')) is this a command chain? */
 			{
 				*length = x;
@@ -44,18 +44,18 @@ ssize_t ibuf(info_t *info, char **b, size_t *length)
 
 /**
  * gLine - gets a line minus the newline
- * @info: struct
+ * @passinfo: struct
  * Return: bytes read
  */
-ssize_t gLine(info_t *info)
+ssize_t gLine(info_t *passinfo)
 {
 	static char *b;
 	static size_t z, x, y;
 	ssize_t l = 0;
-	char **buf_p = &(info->arg), *p;
+	char **buf_p = &(passinfo->arg), *p;
 
 	_putchar(BUF_FLUSH);
-	l = input_buf(info, &b, &y);
+	l = input_buf(passinfo, &b, &y);
 	if (l == -1) 
 		return (-1);
 	if (y)
@@ -63,10 +63,10 @@ ssize_t gLine(info_t *info)
 		x = z;
 		p = b + z; 
 
-		check_chain(info, b, &x, z, y);
+		check_chain(passinfo, b, &x, z, y);
 		while (x < y)
 		{
-			if (is_chain(info, b, &x))
+			if (is_chain(passinfo, b, &x))
 				break;
 			x++;
 		}
@@ -88,18 +88,18 @@ ssize_t gLine(info_t *info)
 
 /**
  * rdB - reads a buffer
- * @info:  struct
+ * @passinfo:  struct
  * @b: buffer
  * @n: size
  * Return: r
  */
-ssize_t rdB(info_t *info, char *b, size_t *n)
+ssize_t rdB(info_t *passinfo, char *b, size_t *n)
 {
 	ssize_t z = 0;
 
 	if (*n)
 		return (0);
-	z = read(info->readfd, buf, READ_BUF_SIZE);
+	z = read(passinfo->readfd, buf, READ_BUF_SIZE);
 	if (z >= 0)
 		*n = z;
 	return (z);
@@ -107,12 +107,12 @@ ssize_t rdB(info_t *info, char *b, size_t *n)
 
 /**
  * _gtLn - gets the next line of input from STDIN
- * @info: struct
+ * @passinfo: struct
  * @a: address of pointer to buffer, preallocated or NULL
  * @len: size of preallocated ptr buffer if not NULL
  * Return: s
  */
-int _gtLn(info_t *info, char **a, size_t *len)
+int _gtLn(info_t *passinfo, char **a, size_t *len)
 {
 	static char buf[READ_BUF_SIZE];
 	static size_t z, num;
@@ -126,7 +126,7 @@ int _gtLn(info_t *info, char **a, size_t *len)
 	if (z == num)
 		z = num = 0;
 
-	y = read_buf(info, buf, &num);
+	y = read_buf(passinfo, buf, &num);
 	if (y == -1 || (y == 0 && num == 0))
 		return (-1);
 
